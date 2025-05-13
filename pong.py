@@ -3,6 +3,7 @@ from turtledemo.nim import SCREENWIDTH
 import pygame
 
 from Ball import Ball
+from Paddle import Paddle
 
 # pygame setup
 pygame.init()
@@ -13,6 +14,8 @@ clock = pygame.time.Clock()
 running = True
 
 ball = Ball(SCREENWIDTH / 2, SCREENHEIGHT / 2)
+leftPaddle=Paddle(20, SCREENHEIGHT / 2 - 50)
+rightPaddle=Paddle(SCREENWIDTH - 40, SCREENHEIGHT / 2 - 50)
 
 while running:
     # poll for events
@@ -28,7 +31,8 @@ while running:
 
     ball.update(SCREENHEIGHT)
     ball.draw(screen)
-
+    leftPaddle.draw(screen)
+    rightPaddle.draw(screen)
     # flip() the display to put your work on screen
     pygame.display.flip()
 

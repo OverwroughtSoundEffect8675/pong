@@ -1,11 +1,12 @@
-import pygame, random
+import pygame, random, math
 
 class Ball:
     def __init__(self, x, y):
         self.x = x
         self.y = y
-        self.xvel= random.randint(-10,10)
-        self.yvel= random.randint(-10,10)
+        direction = random.randint(0,360)
+        self.xvel= 6 * math.cos(math.radians(direction))
+        self.yvel= 6 * math.sin(math.radians(direction))
     def update(self, screenHeight):
         self.x+=self.xvel
         self.y+=self.yvel

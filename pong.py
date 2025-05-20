@@ -1,41 +1,67 @@
-from turtledemo.nim import SCREENWIDTH
-
 import pygame
+import sys
 
-from Ball import Ball
-from Paddle import Paddle
 
-# pygame setup
+
 pygame.init()
-SCREENWIDTH=1280
-SCREENHEIGHT=720
-screen = pygame.display.set_mode((SCREENWIDTH, SCREENHEIGHT))
+
+WIDTH , HEIGHT = 800, 600
+SCREEN = pygame.display.set_mode(WIDTH, HEIGHT)
+pygame.display.set_caption("Pong Game")
+
+WHITE = (255, 255, 255)
+BLACK = (0, 0, 0)
+
+PADDLE_WIDTH, PADDLE_HEIGHT = 10, 100
+PADDLE_SPEED = 8
+
+BALL_SIZE = 15
+BALL_SPEED_X=5
+BALL_SPEED_Y=5
+
+paddle1 = pygame.Rect(50, HEIGHT/2 - PADDLE_HEIGHT/2, PADDLE_WIDTH, PADDLE_HEIGHT)
+paddle2 = pygame.Rect(WIDTH - 60, HEIGHT/2- PADDLE_HEIGHT/2, PADDLE_WIDTH, PADDLE_HEIGHT)
+
+ball = pygame.Rect(WIDTH/2 - BALL_SIZE/2, HEIGHT/2 - BALL_SIZE/2, BALL_SIZE, BALL_SIZE)
+
+
+score1 = 0
+score2 = 0
+font = pygame.font.Font(None, 13)
+
 clock = pygame.time.Clock()
-running = True
 
-ball = Ball(SCREENWIDTH / 2, SCREENHEIGHT / 2)
-leftPaddle=Paddle(20, SCREENHEIGHT / 2 - 50)
-rightPaddle=Paddle(SCREENWIDTH - 40, SCREENHEIGHT / 2 - 50)
+def resetBall():
+    ball.center = (WIDTH // 2, HEIGHT // 2)
+    global BALL_SPEED_X, BALL_SPEED_Y
+    BALL_SPEED_X *= -1
+    BALL_SPEED_Y *= -1
 
-while running:
-    # poll for events
-    # pygame.QUIT event means the user clicked X to close your window
+while True:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
-            running = False
+            pygame.quit()
+            sys.exit()
 
-    # fill the screen with a color to wipe away anything from last frame
-    screen.fill("black")
+    keys = pygame.key.get_pressed()
+    if keys[pygame.K_w] and paddle1.top > 0:
+        paddle1.y -= PADDLE_SPEED
+    if keys[pygame.K_w] and paddle1.bottom > 0:
+        paddle1.y += PADDLE_SPEED
+    if keys[pygame.K_w] and paddle2.top > 0:
+        paddle2.y -= PADDLE_SPEED
+    if keys[pygame.K_w] and paddle2.bottom > 0:
+        paddle2.y += PADDLE_SPEED
 
-    # RENDER YOUR GAME HERE
+    ball.x += BALL_SPEED_X
+    ball.y += BALL_SPEED_Y
 
-    ball.update(SCREENHEIGHT)
-    ball.draw(screen)
-    leftPaddle.draw(screen)
-    rightPaddle.draw(screen)
-    # flip() the display to put your work on screen
-    pygame.display.flip()
+    if  ball.top <= 0 or ball.bottom >= HEIGHT:
+        BALL_SPEED_Y *= -1
 
-    clock.tick(60)  # limits FPS to 60
+    if ball.colliderect(paddle1) or ball.colliderect(paddle2):
+        BALL_SPEED_X *= -1
 
-pygame.quit()
+
+
+
